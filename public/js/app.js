@@ -5,6 +5,7 @@ let config = null;
 /**
  * Starts the authentication flow
  */
+// Deliverable 2 - Login
 const login = async () => {
   try {
     await auth0.loginWithRedirect({
@@ -69,12 +70,14 @@ const linkAccount = async () => {
     email,
   } = await authenticateUser();
 
+  //Insurance that you can't link an unverified account even if the button event doesnt exist
   if (!email_verified) {
     throw new Error(
       `Account linking is only allowed to a verified account. Please verify your email ${email}.`
     );
   }
 
+  //Deliverable 3 - API call to the auth0 api to link the account using a bearer auth token
   await fetch(`https://${config.domain}/api/v2/users/${sub}/identities`, {
     method: "POST",
     headers: {
@@ -86,7 +89,7 @@ const linkAccount = async () => {
     }),
   });
 };
-//unlink account api call
+//Deliverable 3 - API to the auth0 api to unlink account
 const unlinkAccount = async (secondaryIdentity) => {
   const { provider, user_id } = secondaryIdentity;
   const accessToken = await auth0.getTokenSilently();
@@ -103,6 +106,7 @@ const unlinkAccount = async (secondaryIdentity) => {
 };
 
 //pulls user profile data via api
+
 const getUserProfile = async (userId) => {
   const token = await auth0.getTokenSilently();
   const response = await fetch(

@@ -53,6 +53,7 @@ const showContent = (id) => {
   document.getElementById(id).classList.remove("hidden");
 };
 
+// Deliverable 3 - Link accounts
 const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
   const {
     user_id: primaryUserId,
@@ -60,7 +61,6 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
     email_verified,
     email = "",
   } = profile;
-
   const el = (selector) => document.querySelector(selector);
 
   el("table.accounts tbody").remove();
@@ -73,6 +73,7 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
     info.innerText = msg;
   };
 
+  //Deliverable 4 - Error for unverified
   if (!email_verified) {
     // don't offer linking for unverified emails.
     showInfoMessage(
@@ -86,7 +87,7 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
   const primary = (identity) =>
     identity.provider !== primaryUserId.split("|")[0] ||
     identity.user_id !== primaryUserId.split("|")[1];
-
+  console.log("Primary User Id: "+primaryUserId)
   const displayable = (identity) => ({
     connection: identity.connection,
     isSocial: identity.isSocial,
@@ -101,6 +102,7 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
     const updatedProfile = await getUserProfile(primaryUserId);
     refreshLinkedAccounts(updatedProfile, true);
   };
+  // Deliverable 4 - If found more than one identity then iterates through list and adds to table with unlink button generation
   if (identities.length > 1) {
     identities
       .filter(primary)
@@ -173,7 +175,8 @@ const updateUI = async () => {
       //sets custom user values
       eachElement(".profile-image", (e) => (e.src = picture));
       eachElement(".user-name", (e) => (e.innerText = name));
-      //sets custom rule user country
+      //Deliverable 5, Deliverable 6 - sets custom rule user country
+      //Works by adding custom rule https://manage.auth0.com/dashboard/us/dev-hrp397r7/rules via the auth0 dashboard for "Add country to the user profile"
       eachElement(".user-flag", (e) => (e.src = getCountryCode(user["https://example.com/country"])));
 
       eachElement(".user-email", (e) => (e.innerText = `${email}(${primaryConnection})`));
@@ -194,7 +197,7 @@ var countrycodedict = {
   'United States': 'us'
   // ... fill in
 };
-
+//Deliverable 5 - open source flag generator via country code
 function getCountryCode(countryName) {
   return 'https://lipis.github.io/flag-icon-css/flags/4x3/'+countrycodedict[countryName]+'.svg';
 }
