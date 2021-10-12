@@ -86,7 +86,7 @@ const linkAccount = async () => {
     }),
   });
 };
-
+//unlink account api call
 const unlinkAccount = async (secondaryIdentity) => {
   const { provider, user_id } = secondaryIdentity;
   const accessToken = await auth0.getTokenSilently();
@@ -102,6 +102,7 @@ const unlinkAccount = async (secondaryIdentity) => {
   );
 };
 
+//pulls user profile data via api
 const getUserProfile = async (userId) => {
   const token = await auth0.getTokenSilently();
   const response = await fetch(
@@ -147,7 +148,7 @@ window.onload = async () => {
         await auth0.getTokenSilently({ ignoreCache: true });
       } catch ({ error }) {
         if (error === "login_required") {
-          console.warn(`Silent authentication failed with *login_required* error. This is possibly due to 3rd party cookies blocked in the browser. 
+          console.warn(`Silent authentication failed with *login_required* error. This is possibly due to 3rd party cookies blocked in the browser.
           Considering using a custom domain or refresh_token mode of the SDK. https://github.com/auth0/auth0-spa-js#refresh-token-fallback`);
         }
       }

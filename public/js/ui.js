@@ -79,6 +79,7 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
       `The email ${email} is not verified. Account linking is only allowed for verified emails.`
     );
     el("button.btn-linkaccount").classList.add("hidden");
+    eachElement(".user-unverified", (e) => (e.innerText = `The user email has not been verified`));
     return;
   }
 
@@ -94,6 +95,7 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
     profileData: JSON.stringify(identity.profileData, null, 2),
   });
 
+  //Refreshes linked account ui
   const refresh = async () => {
     showInfoMessage("");
     const updatedProfile = await getUserProfile(primaryUserId);
@@ -117,6 +119,7 @@ const refreshLinkedAccounts = (profile, supressEventSubscription = false) => {
         unlinkButton.addEventListener("click", async ({ target }) => {
           try {
             target.classList.add("disabled");
+            //unlink event
             await unlinkAccount(identity);
             refresh();
           } finally {
@@ -141,6 +144,7 @@ const updateUI = async () => {
   try {
     const isAuthenticated = await auth0.isAuthenticated();
     if (isAuthenticated) {
+      //Pulls user object from Auth0 class
       const { sub: userId, ...user } = await auth0.getUser();
       const profile = await getUserProfile(userId);
       if (profile) refreshLinkedAccounts(profile);
@@ -166,9 +170,10 @@ const updateUI = async () => {
 
       const { connection: primaryConnection = "" } = primaryIdentity;
       const { name = "", picture, email = "" } = user;
+      //sets custom user values
       eachElement(".profile-image", (e) => (e.src = picture));
       eachElement(".user-name", (e) => (e.innerText = name));
-
+      //sets custom rule user country
       eachElement(".user-flag", (e) => (e.src = getCountryCode(user["https://example.com/country"])));
 
       eachElement(".user-email", (e) => (e.innerText = `${email}(${primaryConnection})`));
